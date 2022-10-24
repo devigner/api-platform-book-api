@@ -1,0 +1,59 @@
+type Book implements Node {
+  id: ID!
+}
+
+"""Page connection for Book."""
+type BookPageConnection {
+  collection: [Book]
+  paginationInfo: BookPaginationInfo!
+}
+
+"""Information about the pagination."""
+type BookPaginationInfo {
+  itemsPerPage: Int!
+  lastPage: Int!
+  totalCount: Int!
+}
+
+"""A node, according to the Relay specification."""
+interface Node {
+  """The id of this node."""
+  id: ID!
+}
+
+type Query {
+  node(id: ID!): Node
+  book(id: ID!): Book
+  books(
+    """Returns the current page."""
+    page: Int
+
+    """Returns the number of items per page."""
+    itemsPerPage: Int
+  ): BookPageConnection
+  store(id: ID!): Store
+  stores(
+    """Returns the current page."""
+    page: Int
+
+    """Returns the number of items per page."""
+    itemsPerPage: Int
+  ): StorePageConnection
+}
+
+type Store implements Node {
+  id: ID!
+}
+
+"""Page connection for Store."""
+type StorePageConnection {
+  collection: [Store]
+  paginationInfo: StorePaginationInfo!
+}
+
+"""Information about the pagination."""
+type StorePaginationInfo {
+  itemsPerPage: Int!
+  lastPage: Int!
+  totalCount: Int!
+}
