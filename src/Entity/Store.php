@@ -19,11 +19,11 @@ use Symfony\Component\Validator\Constraints as Assert;
     ],
     graphql: [
         'item_query' => [
-            'normalization_context' => ['groups' => ['read']],
+            'normalization_context' => ['groups' => ['read_item']],
         ],
         'collection_query' => [
             'pagination_type' => 'page',
-            'normalization_context' => ['groups' => ['read']],
+            'normalization_context' => ['groups' => ['read_collection']],
         ],
     ],
     itemOperations: [
@@ -39,7 +39,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Store
 {
     public function __construct(
-        #[Groups(['read', 'create'])]
+        #[Groups(['read_item', 'read_collection'])]
         #[Assert\Uuid]
         #[ORM\Id]
         #[ORM\Column(type: 'string', length: 36, unique: true)]
@@ -48,6 +48,7 @@ class Store
         $this->books = new ArrayCollection();
     }
 
+    #[Groups(['read_item', 'read_collection'])]
     #[ORM\OneToMany(mappedBy: 'store', targetEntity: Book::class)]
     #[ORM\JoinColumn(name: 'store_id', referencedColumnName: 'store_id')]
     private Collection $books;

@@ -1,18 +1,22 @@
-type Book implements Node {
+type BookCollection implements Node {
   id: ID!
 }
 
-"""Page connection for Book."""
-type BookPageConnection {
-  collection: [Book]
-  paginationInfo: BookPaginationInfo!
+"""Page connection for BookCollection."""
+type BookCollectionPageConnection {
+  collection: [BookCollection]
+  paginationInfo: BookCollectionPaginationInfo!
 }
 
 """Information about the pagination."""
-type BookPaginationInfo {
+type BookCollectionPaginationInfo {
   itemsPerPage: Int!
   lastPage: Int!
   totalCount: Int!
+}
+
+type BookItem implements Node {
+  id: ID!
 }
 
 """A node, according to the Relay specification."""
@@ -23,37 +27,41 @@ interface Node {
 
 type Query {
   node(id: ID!): Node
-  book(id: ID!): Book
+  book(id: ID!): BookItem
   books(
     """Returns the current page."""
     page: Int
 
     """Returns the number of items per page."""
     itemsPerPage: Int
-  ): BookPageConnection
-  store(id: ID!): Store
+  ): BookCollectionPageConnection
+  store(id: ID!): StoreItem
   stores(
     """Returns the current page."""
     page: Int
 
     """Returns the number of items per page."""
     itemsPerPage: Int
-  ): StorePageConnection
+  ): StoreCollectionPageConnection
 }
 
-type Store implements Node {
+type StoreCollection implements Node {
   id: ID!
 }
 
-"""Page connection for Store."""
-type StorePageConnection {
-  collection: [Store]
-  paginationInfo: StorePaginationInfo!
+"""Page connection for StoreCollection."""
+type StoreCollectionPageConnection {
+  collection: [StoreCollection]
+  paginationInfo: StoreCollectionPaginationInfo!
 }
 
 """Information about the pagination."""
-type StorePaginationInfo {
+type StoreCollectionPaginationInfo {
   itemsPerPage: Int!
   lastPage: Int!
   totalCount: Int!
+}
+
+type StoreItem implements Node {
+  id: ID!
 }
