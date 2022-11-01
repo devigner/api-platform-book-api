@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Resolver;
 
-use ApiPlatform\Core\GraphQl\Resolver\QueryCollectionResolverInterface;
+use ApiPlatform\GraphQl\Resolver\QueryCollectionResolverInterface;
 
 class BookCollectionResolver implements QueryCollectionResolverInterface
 {

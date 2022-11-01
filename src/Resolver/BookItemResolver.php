@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Resolver;
 
-use ApiPlatform\Core\GraphQl\Resolver\QueryItemResolverInterface;
+use ApiPlatform\GraphQl\Resolver\QueryItemResolverInterface;
 use App\Entity\Book;
 
 class BookItemResolver implements QueryItemResolverInterface
 {
-    public function __invoke($item, array $context): ?Book
+    public function __invoke(?object $item, array $context): object
     {
         return $item;
     }

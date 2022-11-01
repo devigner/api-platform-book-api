@@ -4,9 +4,14 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiProperty;
-use ApiPlatform\Core\Annotation\ApiResource;
-use App\Platform\Output;
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\GraphQl\Query;
+use ApiPlatform\Metadata\GraphQl\QueryCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\ApiResource;
 use App\Resolver\BookCollectionResolver;
 use App\Resolver\BookItemResolver;
 use Doctrine\ORM\Mapping as ORM;
@@ -15,39 +20,37 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity]
 #[ApiResource(
-    collectionOperations: [
-        'get',
-        'post' => ['denormalization_context' => ['groups' => ['read']]],
+    operations: [
+        new Get(),
+        new Patch(),
+        new GetCollection(),
+        new Post(),
     ],
-    graphql: [
-        'item_query' => [
-            'item_query' => BookItemResolver::class,
-            'normalization_context' => ['groups' => ['read_item']],
-        ],
-        'collection_query' => [
-            'pagination_type' => 'page',
-            'collection_query' => BookCollectionResolver::class,
-            'normalization_context' => ['groups' => ['read_collection']],
-        ],
-    ],
-    itemOperations: [
-        'get',
-        'patch',
-    ],
-    attributes: [
-        'pagination_type' => 'page',
-    ],
-    denormalizationContext: ['groups' => ['write']],
     normalizationContext: ['groups' => ['read']],
+    denormalizationContext: ['groups' => ['write']],
+    paginationType: 'page',
+    graphQlOperations: [
+        new Query(
+            resolver: BookItemResolver::class,
+            normalizationContext: ['groups' => ['read_item']],
+            name: 'item_query',
+        ),
+        new QueryCollection(
+            resolver: BookCollectionResolver::class,
+            paginationType: 'page',
+            normalizationContext: ['groups' => ['read_collection']],
+            name: 'collection_query',
+        ),
+    ],
 )]
 class Book
 {
     public function __construct(
         #[Groups(['read_item', 'create'])]
-        #[Assert\Uuid]
         #[ORM\Id]
-        #[ORM\Column(type: 'string', length: 36, unique: true)]
-        private readonly string $bookId,
+        #[ORM\GeneratedValue]
+        #[ORM\Column(type: 'integer', unique: true)]
+        private readonly int $bookId,
 
         #[Groups(['read_collection', 'create'])]
         #[ORM\ManyToOne(targetEntity: Store::class, inversedBy: 'books')]
@@ -55,7 +58,6 @@ class Book
         #[ApiProperty(readableLink: false, writableLink: false)]
         private readonly Store $store,
     ) {
-
     }
 
     #[Groups(['read_collection', 'write'])]
